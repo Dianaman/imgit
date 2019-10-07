@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Imgit</string>
+    <string name="sign_in">Registrarse</string>
+    <string name="log_in">Iniciar sesión</string>
+    <string name="take_photo">Tomar foto</string>
+    <string name="upload_photo">Subir foto</string>
+    <string name="upload">Subir</string>
+    <string name="show_more">Mostrar más</string>
+    <string name="copy_url">Copiar URL directa</string>
+    <string name="copy_html">Copiar etiqueta HTML</string>
+    <string name="username">Nombre de usuario</string>
+    <string name="password">Contraseña</string>
+    <string name="re_password">Repetir contraseña</string>
+</resources>
