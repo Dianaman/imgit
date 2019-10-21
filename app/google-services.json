@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "466829619228",
+    "firebase_url": "https://imgit-917eb.firebaseio.com",
+    "project_id": "imgit-917eb",
+    "storage_bucket": "imgit-917eb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:466829619228:android:4e251dbc9b5994935a2fd9",
+        "android_client_info": {
+          "package_name": "com.example.imgit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "466829619228-c3cjpu7h6echmnqlet5nlbcnd4aq49bs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVlv-GG5Y7YQRXHLCrV-Ek30jfIaWVwS0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "466829619228-c3cjpu7h6echmnqlet5nlbcnd4aq49bs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

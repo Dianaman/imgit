@@ -9,6 +9,7 @@
     <string name="show_more">Mostrar más</string>
     <string name="copy_url">Copiar URL directa</string>
     <string name="copy_html">Copiar etiqueta HTML</string>
+    <string name="email">Email</string>
     <string name="username">Nombre de usuario</string>
     <string name="password">Contraseña</string>
     <string name="re_password">Repetir contraseña</string>
