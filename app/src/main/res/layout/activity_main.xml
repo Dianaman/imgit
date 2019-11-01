@@ -28,6 +28,7 @@
             android:layout_height="wrap_content"
             android:text="@string/upload_photo"
             android:id="@+id/btn_upload_photo"/>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

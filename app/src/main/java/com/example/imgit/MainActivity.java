@@ -4,18 +4,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
@@ -24,30 +21,34 @@ import android.widget.Button;
 
 import android.content.Intent;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements Handler.Callback {
     private static final int TAKE_PICTURE = 1;
     Handler subirFotoHandler;
+    Handler authHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        this.login();
+
         requestPermissions();
 
         TomarFotoListener tomarFotoListener = new TomarFotoListener(this);
         Button tomarFotoBtn = (Button) this.findViewById(R.id.btn_take_photo);
         tomarFotoBtn.setOnClickListener(tomarFotoListener);
+    }
+
+    public void login() {
+        // autenticacion
+        this.authHandler = new Handler(this);
+        LoginThread thread = new LoginThread(this.authHandler);
+        thread.start();
     }
 
     public void abrirCamara() {
@@ -69,14 +70,6 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
                 if (resultCode == Activity.RESULT_OK) {
                     if (data != null && data.getExtras() != null) {
                         Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
-                        Log.d("bitmap", imageBitmap.toString());
-                        //mImageView.setImageBitmap(imageBitmap);
-
-                        // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
-                        Uri tempUri = getImageUri(getApplicationContext(), imageBitmap);
-
-                        // CALL THIS METHOD TO GET THE ACTUAL PATH
-                        File finalFile = new File(getRealPathFromURI(tempUri));
 
                         subirFotoHandler = new Handler(this);
                         SubirFotoThread thread = new SubirFotoThread(subirFotoHandler, imageBitmap);
@@ -90,30 +83,11 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
     public boolean handleMessage(@NonNull Message message) {
         if(message.getTarget() == this.subirFotoHandler){
             Log.d("mensaje", message.obj.toString());
+        } else {
+            Log.d("otro mensaje", message.obj.toString());
         }
 
         return false;
-    }
-
-    public Uri getImageUri(Context inContext, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
-    }
-
-    public String getRealPathFromURI(Uri uri) {
-        String path = "";
-        if (getContentResolver() != null) {
-            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-            if (cursor != null) {
-                cursor.moveToFirst();
-                int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-                path = cursor.getString(idx);
-                cursor.close();
-            }
-        }
-        return path;
     }
 
     private void requestPermissions(){

@@ -16,17 +16,12 @@ public class SubirFotoThread extends Thread {
         this.imagenASubir = imagenASubir;
     }
 
-    public SubirFotoThread(Handler handler, File imagePath) {
-        this.handler = handler;
-        this.imagePath = imagePath;
-    }
-
     @Override
     public void run() {
         SubirFotoManager manager = new SubirFotoManager();
-        byte[] imagen = manager.subirFoto(this.imagenASubir);
+        String resImagen = manager.subirFoto(this.imagenASubir);
         Message message = new Message();
-        message.obj = imagen;
+        message.obj = resImagen;
         this.handler.sendMessage(message);
 
     }
