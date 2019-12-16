@@ -1,6 +1,8 @@
-package com.example.imgit;
+package com.example.imgit.camera;
 
 import android.view.View;
+
+import com.example.imgit.MainActivity;
 
 
 public class TomarFotoListener implements View.OnClickListener {

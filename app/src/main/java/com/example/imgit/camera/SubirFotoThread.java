@@ -1,4 +1,4 @@
-package com.example.imgit;
+package com.example.imgit.camera;
 
 import android.graphics.Bitmap;
 import android.os.Handler;

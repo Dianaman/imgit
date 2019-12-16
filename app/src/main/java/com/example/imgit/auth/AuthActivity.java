@@ -1,4 +1,4 @@
-package com.example.imgit.auth.signin;
+package com.example.imgit.auth;
 
 import android.content.Context;
 import android.content.Intent;
@@ -20,7 +20,7 @@ import net.openid.appauth.ResponseTypeValues;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SignInActivity extends AppCompatActivity {
+public class AuthActivity extends AppCompatActivity {
     AuthorizationRequest authRequest;
     AuthorizationService authService;
 
@@ -77,6 +77,8 @@ public class SignInActivity extends AppCompatActivity {
             configs.add(new Pair<String, String>(Constants.SP_ACCOUNT_ID, accountId));
 
             this.editPrefs(configs);
+
+            this.finish();
         }
     }
 
@@ -89,12 +91,6 @@ public class SignInActivity extends AppCompatActivity {
         }
 
         editor.commit();
-    }
-
-    public String getPref(String config, String replacement) {
-        SharedPreferences prefs = getSharedPreferences(Constants.SHARED_PREF, Context.MODE_PRIVATE);
-        String pref = prefs.getString(config, replacement);
-        return pref;
     }
 
 }

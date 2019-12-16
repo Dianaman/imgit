@@ -3,6 +3,7 @@ package com.example.imgit.album;
 import android.graphics.Bitmap;
 
 public class ImageItem {
+    public String id;
     public String title;
     public Bitmap image;
     public String imageUrl;

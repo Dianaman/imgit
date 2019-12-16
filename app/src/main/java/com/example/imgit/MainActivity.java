@@ -18,8 +18,10 @@ import android.widget.Button;
 
 import android.content.Intent;
 
-import com.example.imgit.album.AlbumActivity;
-import com.example.imgit.auth.signin.SignInActivity;
+import com.example.imgit.auth.AuthActivity;
+import com.example.imgit.camera.SubirFotoThread;
+import com.example.imgit.camera.TomarFotoListener;
+import com.example.imgit.gallery.GalleryActivity;
 
 public class MainActivity extends AppCompatActivity implements Handler.Callback {
     private static final int TAKE_PICTURE = 1;
@@ -50,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
 
 
     public void login() {
-        Intent i = new Intent(this, SignInActivity.class);
+        Intent i = new Intent(this, AuthActivity.class);
         startActivityForResult(i, AUTH);
     }
 
@@ -66,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
 
     public void verAlbum() {
 
-        Intent i = new Intent(this, AlbumActivity.class);
+        Intent i = new Intent(this, GalleryActivity.class);
         startActivity(i);
     }
 

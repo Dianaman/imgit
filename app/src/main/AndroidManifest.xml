@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".auth.signin.SignInActivity"></activity>
+        <activity android:name=".auth.AuthActivity"></activity>
 
         <activity
             android:name="net.openid.appauth.RedirectUriReceiverActivity"
@@ -36,6 +36,11 @@
                 <data android:scheme="com.example.imgit" android:host="callback"/>
             </intent-filter>
         </activity>
+
+        <activity android:name=".gallery.GalleryActivity"></activity>
+
+        <activity android:name=".album.AlbumActivity"></activity>
+
 
         <provider
             android:name="androidx.core.content.FileProvider"
