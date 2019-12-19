@@ -1,6 +1,7 @@
 package com.example.imgit.gallery;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,7 +15,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.imgit.Constants;
 import com.example.imgit.R;
+import com.example.imgit.album.Album;
 import com.example.imgit.album.AlbumActivity;
 
 import org.json.JSONException;
@@ -27,34 +30,24 @@ public class GalleryActivity extends AppCompatActivity implements Handler.Callba
     public Handler albumsHandler;
     public Handler newAlbumHandler;
     public GalleryAdapter albumsAdapter;
-    public List<JSONObject> albumes;
+    public List<Album> albumes;
     GalleryActivity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // action bar
-
         setContentView(R.layout.gallery);
         this.activity = this;
-        Log.d("galeery", "se creo el activity");
 
+        SharedPreferences sp = this.getSharedPreferences(Constants.SHARED_PREF, MODE_PRIVATE);
 
         this.albumsHandler = new Handler(this);
-        GalleryThread thread = new GalleryThread(this.albumsHandler, this);
+        GalleryThread thread = new GalleryThread(this.albumsHandler, sp);
         thread.start();
 
-        GalleryListener listener = new GalleryListener(this);
-        Button btnAdd = this.findViewById(R.id.btn_add_album);
-        btnAdd.setOnClickListener(listener);
     }
 
-    public void agregarAlbum(String album) {
-        this.newAlbumHandler = new Handler(this);
-        GalleryNewThread thread = new GalleryNewThread(this.newAlbumHandler, this, album);
-        thread.start();
-    }
 
     @Override
     public boolean handleMessage(@NonNull Message message) {
@@ -62,7 +55,7 @@ public class GalleryActivity extends AppCompatActivity implements Handler.Callba
         if(message.getTarget() == this.albumsHandler) {
             Log.d("handle message", "llego un mensaje");
 
-            this.albumes = (List<JSONObject>) message.obj;
+            this.albumes = (List<Album>) message.obj;
 
             RecyclerView rv = this.activity.findViewById(R.id.rv_albums);
             this.albumsAdapter = new GalleryAdapter(this, this.albumes);
@@ -73,7 +66,7 @@ public class GalleryActivity extends AppCompatActivity implements Handler.Callba
             rv.setLayoutManager(lm);
 
         } else {
-            this.albumes.add((JSONObject)message.obj);
+            this.albumes.add((Album) message.obj);
             this.albumsAdapter.notifyDataSetChanged();
         }
         return false;
@@ -81,13 +74,18 @@ public class GalleryActivity extends AppCompatActivity implements Handler.Callba
 
     public void verAlbum(int position) {
         Intent i = new Intent(this, AlbumActivity.class);
-        JSONObject album = this.albumes.get(position);
-        try {
-            String id = album.getString("id");
-            i.putExtra("album", id);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        Album album = this.albumes.get(position);
+
+        String id = album.getId();
+        String hash = album.getHash();
+        String title = album.getTitle();
+        Log.d("id", id);
+        Log.d("hash", hash);
+        Log.d("title", title);
+
+        i.putExtra("album", id);
+        i.putExtra("hash", hash);
+        i.putExtra("title", title);
         startActivity(i);
     }
 }

@@ -7,16 +7,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.imgit.R;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.example.imgit.album.Album;
 
 public class GalleryViewHolder extends RecyclerView.ViewHolder {
     GalleryActivity activity;
     View itemView;
     int position;
-    TextView tvName;
-    TextView tvId;
+    TextView tvAlbum;
 
 
     public GalleryViewHolder(@NonNull View itemView, GalleryActivity activity) {
@@ -24,18 +21,13 @@ public class GalleryViewHolder extends RecyclerView.ViewHolder {
 
         this.itemView = itemView;
         this.activity = activity;
-        this.tvName = itemView.findViewById(R.id.albumName);
-        this.tvId = itemView.findViewById(R.id.albumId);
+
+        this.tvAlbum = itemView.findViewById(R.id.album_title);
     }
 
-    public void setItem(JSONObject album) {
-        AlbumListener listener = new AlbumListener(this.activity, this.position);
-        this.tvName.setOnClickListener(listener);
-        try {
-            this.tvName.setText(album.getString("title"));
-            this.tvId.setText(album.getString("id"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    public void setItem(Album album) {
+        this.tvAlbum.setText(album.getTitle());
+        GalleryAlbumListener listener = new GalleryAlbumListener(this.activity, this.position);
+        this.itemView.setOnClickListener(listener);
     }
 }

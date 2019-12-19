@@ -1,4 +1,4 @@
-package com.example.imgit.gallery;
+package com.example.imgit.gallerynew;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -7,12 +7,13 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.example.imgit.R;
+import com.example.imgit.album.AlbumActivity;
 
-public class GalleryPopupListener implements DialogInterface.OnClickListener {
+public class GalleryNewPopupListener implements DialogInterface.OnClickListener {
     private View view;
-    private GalleryActivity activity;
+    private AlbumActivity activity;
 
-    public GalleryPopupListener(View view, GalleryActivity activity){
+    public GalleryNewPopupListener(View view, AlbumActivity activity){
         this.view = view;
         this.activity = activity;
     }

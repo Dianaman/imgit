@@ -5,10 +5,16 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.util.Base64;
+import android.util.Log;
 
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Iterator;
 
@@ -43,13 +49,50 @@ public class Utils {
         return result.toString();
     }
 
-    public static String getToken(Activity activity) {
-        SharedPreferences sp = activity.getSharedPreferences(Constants.SHARED_PREF, Context.MODE_PRIVATE);
-        return sp.getString(Constants.SP_ACCESS_TOKEN, "");
+    public static byte[] getImage(String urlPath){
+        byte[] imagen;
+        try {
+            URL url = new URL(urlPath);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty ("Authorization", "Client-ID " + Constants.IMGUR_CLIENT_ID);
+            connection.connect();
+
+            if(connection.getResponseCode() == 200) {
+                imagen = leerStream(connection);
+                Log.d("url", urlPath);
+                Log.d("bytearr", imagen.toString());
+                return imagen;
+            }
+
+        } catch(MalformedURLException e){
+            e.printStackTrace();
+        } catch(IOException e){
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
-    public static String getUsername(Activity activity) {
-        SharedPreferences sp = activity.getSharedPreferences(Constants.SHARED_PREF, Context.MODE_PRIVATE);
-        return sp.getString(Constants.SP_ACCOUNT_USERNAME, "");
+    public static byte[] leerStream(HttpURLConnection conexion){
+        byte[] byteArray = null;
+
+        try {
+            InputStream is = conexion.getInputStream();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1000];
+            int cantidadLeida;
+
+            while((cantidadLeida = is.read(buffer, 0, 1000)) > -1){
+                baos.write(buffer, 0, cantidadLeida);
+            }
+
+            byteArray = baos.toByteArray();
+
+            is.close();
+
+        } catch(IOException e){
+            e.printStackTrace();
+        }
+        return byteArray;
     }
 }

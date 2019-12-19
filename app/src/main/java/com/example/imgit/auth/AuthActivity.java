@@ -58,26 +58,27 @@ public class AuthActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == 1) {
-            String uriString = data.getData().toString();
-            String paramsString = "http://callback?" + uriString.substring(uriString.indexOf("#") + 1);
-            Uri uri = Uri.parse(paramsString);
+            if(resultCode == RESULT_OK) {
+                String uriString = data.getData().toString();
+                String paramsString = "http://callback?" + uriString.substring(uriString.indexOf("#") + 1);
+                Uri uri = Uri.parse(paramsString);
 
-            List<Pair<String, String>> configs = new ArrayList<Pair<String, String>>();
+                List<Pair<String, String>> configs = new ArrayList<Pair<String, String>>();
 
-            String accessToken = uri.getQueryParameter(Constants.SP_ACCESS_TOKEN);
-            configs.add(new Pair<String, String>(Constants.SP_ACCESS_TOKEN, accessToken));
+                String accessToken = uri.getQueryParameter(Constants.SP_ACCESS_TOKEN);
+                configs.add(new Pair<String, String>(Constants.SP_ACCESS_TOKEN, accessToken));
 
-            String refreshToken = uri.getQueryParameter(Constants.SP_REFRESH_TOKEN);
-            configs.add(new Pair<String, String>(Constants.SP_REFRESH_TOKEN, refreshToken));
+                String refreshToken = uri.getQueryParameter(Constants.SP_REFRESH_TOKEN);
+                configs.add(new Pair<String, String>(Constants.SP_REFRESH_TOKEN, refreshToken));
 
-            String accountUser = uri.getQueryParameter(Constants.SP_ACCOUNT_USERNAME);
-            configs.add(new Pair<String, String>(Constants.SP_ACCOUNT_USERNAME, accountUser));
+                String accountUser = uri.getQueryParameter(Constants.SP_ACCOUNT_USERNAME);
+                configs.add(new Pair<String, String>(Constants.SP_ACCOUNT_USERNAME, accountUser));
 
-            String accountId = uri.getQueryParameter(Constants.SP_ACCOUNT_ID);
-            configs.add(new Pair<String, String>(Constants.SP_ACCOUNT_ID, accountId));
+                String accountId = uri.getQueryParameter(Constants.SP_ACCOUNT_ID);
+                configs.add(new Pair<String, String>(Constants.SP_ACCOUNT_ID, accountId));
 
-            this.editPrefs(configs);
-
+                this.editPrefs(configs);
+            }
             this.finish();
         }
     }

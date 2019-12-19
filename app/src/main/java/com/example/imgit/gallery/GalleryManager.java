@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.example.imgit.Constants;
 import com.example.imgit.Utils;
+import com.example.imgit.album.Album;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,8 +25,8 @@ import java.util.List;
 
 public class GalleryManager {
 
-    public List<JSONObject> traerAlbumes(String token, String username) {
-        List<JSONObject> albumes = new ArrayList<JSONObject>();
+    public List<Album> traerAlbumes(String token, String username) {
+        List<Album> albumes = new ArrayList<Album>();
 
         try {
             String path = "https://api.imgur.com/3/account/" + username + "/albums";
@@ -53,7 +54,11 @@ public class GalleryManager {
                 JSONArray arrJson = obj.getJSONArray("data");
                 for(int i = 0; i < arrJson.length(); i++) {
                     JSONObject albumObj = arrJson.getJSONObject(i);
-                    albumes.add(albumObj);
+                    String title = albumObj.getString("title");
+                    String hash = albumObj.getString("deletehash");
+                    String id = albumObj.getString("id");
+                    Album album = new Album(id, hash, title);
+                    albumes.add(album);
                 }
             } else {
                 Log.d("error", connection.getResponseMessage());

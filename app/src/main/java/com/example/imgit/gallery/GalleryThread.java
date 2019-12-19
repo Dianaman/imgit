@@ -10,18 +10,17 @@ import com.example.imgit.Constants;
 
 public class GalleryThread extends Thread {
     Handler handler;
-    Activity activity;
+    SharedPreferences sp;
 
-    public GalleryThread(Handler handler, Activity activity) {
+    public GalleryThread(Handler handler, SharedPreferences sp) {
         this.handler = handler;
-        this.activity = activity;
+        this.sp = sp;
     }
 
     @Override
     public void run() {
         super.run();
 
-        SharedPreferences sp = this.activity.getSharedPreferences(Constants.SHARED_PREF, Context.MODE_PRIVATE);
         String token = sp.getString(Constants.SP_ACCESS_TOKEN, "");
         String username = sp.getString(Constants.SP_ACCOUNT_USERNAME, "");
 

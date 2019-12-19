@@ -1,23 +1,18 @@
 package com.example.imgit.album;
 
-import android.graphics.Bitmap;
-import android.media.Image;
 import android.util.Log;
 
 import com.example.imgit.Constants;
+import com.example.imgit.image.ImageItem;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -25,13 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AlbumManager {
-    public List<ImageItem> getAlbumImages(String albumId){
+    public List<ImageItem> getAlbumImages(String albumId, String username){
         List<ImageItem> imagenes = new ArrayList<ImageItem>();
 
         try {
 
 
-            URL url = new URL("https://api.imgur.com/3/album/" + albumId);
+            URL url = new URL("https://api.imgur.com/3/account/" + username + "/album/" + albumId);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty ("Authorization", "Client-ID " + Constants.IMGUR_CLIENT_ID);
@@ -48,20 +43,25 @@ public class AlbumManager {
                 }
                 in.close();
 
-                // TODO tomar imagenes y pasarlo
                 String imgStrs = sb.toString();
                 Log.d("imagenes", imgStrs);
 
                 JSONObject obj = new JSONObject(imgStrs);
                 JSONObject jsonObj = obj.getJSONObject("data");
-                ImageItem iItem = new ImageItem();
-                iItem.imageUrl = jsonObj.getString("link");
-                iItem.id = jsonObj.getString("id");
-                iItem.title = jsonObj.getString("title");
-                imagenes.add(iItem);
+                JSONArray imgArr = jsonObj.getJSONArray("images");
+                for(int i=0; i< imgArr.length(); i++) {
+                    JSONObject image = imgArr.getJSONObject(i);
+
+                    ImageItem iItem = new ImageItem();
+                    iItem.imageUrl = image.getString("link");
+                    iItem.id = image.getString("id");
+                    iItem.title = image.getString("title");
+                    imagenes.add(iItem);
+                }
+
 
             } else {
-                Log.d("error", connection.getResponseMessage());
+                Log.d("error get imagenes", connection.getResponseMessage());
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();

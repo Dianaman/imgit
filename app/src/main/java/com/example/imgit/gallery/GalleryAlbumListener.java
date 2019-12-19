@@ -2,11 +2,11 @@ package com.example.imgit.gallery;
 
 import android.view.View;
 
-public class AlbumListener implements View.OnClickListener {
+public class GalleryAlbumListener implements View.OnClickListener {
     GalleryActivity activity;
     int position;
 
-    public AlbumListener(GalleryActivity activity, int position) {
+    public GalleryAlbumListener(GalleryActivity activity, int position) {
         this.activity = activity;
         this.position = position;
     }

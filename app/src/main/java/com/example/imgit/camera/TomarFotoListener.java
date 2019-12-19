@@ -3,12 +3,13 @@ package com.example.imgit.camera;
 import android.view.View;
 
 import com.example.imgit.MainActivity;
+import com.example.imgit.album.AlbumActivity;
 
 
 public class TomarFotoListener implements View.OnClickListener {
-    private MainActivity activity;
+    private AlbumActivity activity;
 
-    public TomarFotoListener(MainActivity activity){
+    public TomarFotoListener(AlbumActivity activity){
         this.activity = activity;
     }
 

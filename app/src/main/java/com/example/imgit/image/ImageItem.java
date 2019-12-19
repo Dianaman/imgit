@@ -1,4 +1,4 @@
-package com.example.imgit.album;
+package com.example.imgit.image;
 
 import android.graphics.Bitmap;
 
@@ -7,6 +7,5 @@ public class ImageItem {
     public String title;
     public Bitmap image;
     public String imageUrl;
-
-    // TODO getters y setters
+    public String imgHash;
 }

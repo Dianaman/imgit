@@ -1,5 +1,7 @@
 package com.example.imgit.album;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
@@ -10,7 +12,11 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.imgit.Constants;
 import com.example.imgit.R;
+import com.example.imgit.image.ImageItem;
+import com.example.imgit.image.ImageListener;
+import com.example.imgit.image.ImageThread;
 
 public class AlbumViewHolder extends RecyclerView.ViewHolder implements Handler.Callback {
     public View itemView;
@@ -20,6 +26,7 @@ public class AlbumViewHolder extends RecyclerView.ViewHolder implements Handler.
     public Handler handler;
     public boolean isFetching = false;
     public ImageView imageView;
+    private SharedPreferences sp;
 
     public AlbumViewHolder(@NonNull View itemView, AlbumActivity activity) {
         super(itemView);
@@ -31,6 +38,8 @@ public class AlbumViewHolder extends RecyclerView.ViewHolder implements Handler.
         this.itemView.setOnClickListener(listener);
 
         this.imageView = this.itemView.findViewById(R.id.imageView);
+
+        this.sp = this.activity.getSharedPreferences(Constants.SHARED_PREF, Context.MODE_PRIVATE);
     }
 
     public void setItem(ImageItem item){
@@ -38,7 +47,7 @@ public class AlbumViewHolder extends RecyclerView.ViewHolder implements Handler.
         if(this.item.image == null && !isFetching){
             this.isFetching = true;
             this.handler = new Handler(this);
-            ImageThread thread = new ImageThread(this.handler, item.imageUrl);
+            ImageThread thread = new ImageThread(this.handler, item.imageUrl, this.sp);
             thread.start();
         }
     }
@@ -47,12 +56,15 @@ public class AlbumViewHolder extends RecyclerView.ViewHolder implements Handler.
     @Override
     public boolean handleMessage(@NonNull Message message) {
         if(message.getTarget() == this.handler) {
-            byte[] byteArray = (byte[]) message.obj;
-            Bitmap imagen = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+            if(message.obj != null ) {
+                byte[] byteArray = (byte[]) message.obj;
+                Bitmap imagen = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
-            item.image = imagen;
-            this.imageView.setImageBitmap(imagen);
-            this.isFetching = false;
+                item.image = imagen;
+                this.imageView.setImageBitmap(imagen);
+                this.isFetching = false;
+            }
+
         }
         return false;
     }

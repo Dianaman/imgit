@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+    <item android:id="@+id/btn_add_album"
+        android:title="Nuevo album"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+    <item android:id="@+id/btn_show_albums"
+        android:title="Albumes"
+        android:orderInCategory="101" app:showAsAction="never" />
+    <!--<item android:id="@+id/btn_del_photos"
+        android:title="Albumes"
+        android:orderInCategory="101" app:showAsAction="never" />
+    <item android:id="@+id/btn_del_album"
+        android:title="Albumes"
+        android:orderInCategory="101" app:showAsAction="never" />-->
+</menu>

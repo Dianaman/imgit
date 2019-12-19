@@ -8,16 +8,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.imgit.R;
+import com.example.imgit.album.Album;
 
 import org.json.JSONObject;
 
 import java.util.List;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryViewHolder> {
-    List<JSONObject> albumes;
+    List<Album> albumes;
     GalleryActivity activity;
 
-    public GalleryAdapter(GalleryActivity activity, List<JSONObject> albumes){
+    public GalleryAdapter(GalleryActivity activity, List<Album> albumes){
         this.activity = activity;
         this.albumes = albumes;
     }
@@ -25,7 +26,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryViewHolder> {
     @NonNull
     @Override
     public GalleryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.album, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.album_item, parent, false);
         GalleryViewHolder holder = new GalleryViewHolder(v, this.activity);
         return holder;
     }

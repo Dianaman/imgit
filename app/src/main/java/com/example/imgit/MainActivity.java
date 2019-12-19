@@ -6,69 +6,68 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.app.Activity;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.MediaStore;
 import android.util.Log;
-import android.widget.Button;
 
 import android.content.Intent;
 
+import com.example.imgit.album.Album;
+import com.example.imgit.album.AlbumActivity;
 import com.example.imgit.auth.AuthActivity;
-import com.example.imgit.camera.SubirFotoThread;
-import com.example.imgit.camera.TomarFotoListener;
-import com.example.imgit.gallery.GalleryActivity;
+import com.example.imgit.auth.AuthThread;
+import com.example.imgit.gallerynew.GalleryNewThread;
+import com.example.imgit.gallery.GalleryThread;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements Handler.Callback {
     private static final int TAKE_PICTURE = 1;
     private static final int AUTH = 2;
 
-    Handler subirFotoHandler;
+    Handler authHandler;
+    Handler subirFotoHandler; // TODO mover
+    Handler galleryHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         requestPermissions();
 
-        TomarFotoListener tomarFotoListener = new TomarFotoListener(this);
-        Button tomarFotoBtn = (Button) this.findViewById(R.id.btn_take_photo);
-        tomarFotoBtn.setOnClickListener(tomarFotoListener);
-
-
-        VerAlbumListener verAlbumListener = new VerAlbumListener(this);
-        Button verAlbumBtn = (Button) this.findViewById(R.id.btn_view_album);
-        verAlbumBtn.setOnClickListener(verAlbumListener);
-
-        Log.d("Antes del login", "antes del login en mainactiity");
-        this.login();
+        this.inicializar();
     }
 
 
-    public void login() {
+    public void inicializar() {
+        SharedPreferences sp = this.getSharedPreferences(Constants.SHARED_PREF, MODE_PRIVATE);
+        String accId = sp.getString(Constants.SP_ACCOUNT_ID, "");
+
+        if(accId != "") {
+            this.realizarOAuth();
+        } else {
+            this.authHandler = new Handler(this);
+            Thread authThread = new AuthThread(authHandler, this.getSharedPreferences(Constants.SHARED_PREF, MODE_PRIVATE));
+            authThread.start();
+        }
+
+    }
+
+    public void realizarOAuth() {
         Intent i = new Intent(this, AuthActivity.class);
         startActivityForResult(i, AUTH);
     }
 
-    public void abrirCamara() {
-        Intent pictureIntent = new Intent(
-                MediaStore.ACTION_IMAGE_CAPTURE
-        );
-        if(pictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(pictureIntent,
-                    TAKE_PICTURE);
-        }
-    }
 
-    public void verAlbum() {
-
-        Intent i = new Intent(this, GalleryActivity.class);
+    public void verAlbum(Album album) {
+        Intent i = new Intent(this, AlbumActivity.class);
+        i.putExtra("id", album.getId());
+        i.putExtra("title", album.getTitle());
+        i.putExtra("hash", album.getHash());
         startActivity(i);
     }
 
@@ -76,16 +75,21 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case TAKE_PICTURE:
-                if (resultCode == Activity.RESULT_OK) {
-                    if (data != null && data.getExtras() != null) {
-                        Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
-
-                        subirFotoHandler = new Handler(this);
-                        SubirFotoThread thread = new SubirFotoThread(subirFotoHandler, imageBitmap);
+            case AUTH:
+                //if(resultCode == Activity.RESULT_OK) {
+                    Log.d("volvio ok del auth", "volvio ok del auth");
+                    SharedPreferences sp =  this.getSharedPreferences(Constants.SHARED_PREF, MODE_PRIVATE);
+                    if (true) {
+                        // TODO para cuenta existente que tome el primer album
+                        this.galleryHandler = new Handler(this);
+                        GalleryThread thread = new GalleryThread(this.galleryHandler, sp);
+                        thread.start();
+                    } else {
+                        // TODO para nueva cuenta que cree un album
+                        this.galleryHandler = new Handler(this);
+                        GalleryNewThread thread = new GalleryNewThread(this.galleryHandler, sp, "Default");
                         thread.start();
                     }
-                }
         }
     }
 
@@ -93,8 +97,13 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
     public boolean handleMessage(@NonNull Message message) {
         if(message.getTarget() == this.subirFotoHandler){
             Log.d("mensaje", message.obj.toString());
-        } else {
-            Log.d("otro mensaje", message.obj.toString());
+        } else if(message.getTarget() == this.authHandler) {
+            if(!(Boolean) message.obj) {
+                this.realizarOAuth();
+            }
+        } else if(message.getTarget() == this.galleryHandler) {
+            List<Album> albumes = (List<Album>) message.obj;
+            this.verAlbum(albumes.get(0));
         }
 
         return false;
